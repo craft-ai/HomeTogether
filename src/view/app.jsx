@@ -8,7 +8,7 @@ import FloorMap from './components/floorMap';
 import Occupant from './components/occupant';
 import Player from './components/player';
 import { Input, Button, Grid, Row, Col, ProgressBar } from 'react-bootstrap';
-import Light from './components/light';
+import Lights from './components/lights';
 import ColorPicker from './components/colorPicker';
 import Reflux from 'reflux';
 import DayAndNight from './components/dayAndNight';
@@ -107,7 +107,7 @@ export default React.createClass({
               <FloorMap onUpdateTV={(val)=>this.updateTV(val)} onUpdateLocation={(location) => {devices.updatePresence('player', location); this.setState({playerPosition: location})}}/>
               <Player location={this.state.playerPosition}/>
               <Occupant onUpdateLocation={(location) => devices.updatePresence('occupant', location)}/>
-              <Light/>
+              <Lights/>
             </Col>
           </Row>
           <Row style={{marginTop:'20px'}}>

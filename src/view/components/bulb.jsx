@@ -77,20 +77,31 @@ export default React.createClass({
     const [r, g, b] = hslToRgb(h, s, Math.max(l - darkening, 0));
     return (
       <div
-        id={ this.props.id }
         style={{
-          backgroundColor: `rgb(${r}, ${g}, ${b})`,
           left: this.props.x,
           top: this.props.y,
-          display: 'block',
           position: 'absolute',
-          textAlign: 'center',
-          pointerEvents: 'none',
-          width: 20,
-          height: 32,
-          mask: `url(${bulb})`,
-          WebkitMask: `url(${bulb})`
-        }} />
+          pointerEvents: 'none'
+        }} >
+        <span
+          style={{
+            display: 'inline-block',
+            backgroundColor: `rgb(${r}, ${g}, ${b})`,
+            width: 20,
+            height: 32,
+            mask: `url(${bulb})`,
+            WebkitMask: `url(${bulb})`
+          }} />
+        <span
+          style={{
+            display: 'inline-block',
+            marginLeft: 5,
+            lineHeight: '32px',
+            verticalAlign: 'bottom'
+          }}>
+          {this.props.label}
+        </span>
+      </div>
     );
   }
 });

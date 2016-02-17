@@ -30,7 +30,6 @@ const LIGHT_HIDDEN = [
 export default React.createClass({
   mixins: [Reflux.connect(ActionStore, 'devices')],
   render: function() {
-    console.log('this.state.devices.lights[0]', this.state.devices.lights[0]);
     return (
       <div id='lights'>
         {
@@ -38,6 +37,7 @@ export default React.createClass({
             (
               <Bulb
                 key={key}
+                label={key}
                 x={LIGHT_LOCATIONS[key].x}
                 y={LIGHT_LOCATIONS[key].y}
                 red={hexToRGB(value.color).r}

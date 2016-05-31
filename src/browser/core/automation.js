@@ -1,5 +1,6 @@
-import { createCraftAgent, updateCraftAgentContext, getCraftAgentDecision } from './craft-ai';
+import craftai from 'craft-ai';
 import _ from 'lodash';
+import { CRAFT_TOKEN, CRAFT_URL, OWNER } from '../constants';
 
 const INITIAL_BRIGHTNESS_HISTORY_FROM_LOCATION = {
   'living_room': require('./tvInitialBrightnessHistory.json'),
@@ -55,6 +56,12 @@ function strFromTvState(state) {
 }
 
 export default function startAutomation(store) {
+  let client = craftai({
+    owner: OWNER,
+    token: CRAFT_TOKEN,
+    url: CRAFT_URL
+  });
+
   // Extract the room having a light
   const enlightenedRooms = store.getState().filter(location => location.has('light')).keySeq();
   const initialTimestamp = timestamp();
@@ -77,12 +84,12 @@ export default function startAutomation(store) {
 
   let createAgents = () => Promise.all(
     enlightenedRooms.map((roomName) =>
-      createCraftAgent(BRIGHTNESS_MODEL_FROM_LOCATION[roomName])
+      client.createAgent(BRIGHTNESS_MODEL_FROM_LOCATION[roomName], undefined, true)
       .then(agent => {
         console.log(`Agent ${agent.id} created for ${roomName} brightness`);
         agents[roomName].brightness = agent.id;
       })
-      .then(() => createCraftAgent(COLOR_MODEL_FROM_LOCATION[roomName]))
+      .then(() => client.createAgent(COLOR_MODEL_FROM_LOCATION[roomName], undefined, true))
       .then(agent => {
         console.log(`Agent ${agent.id} created for ${roomName} color`);
         agents[roomName].color = agent.id;
@@ -103,12 +110,12 @@ export default function startAutomation(store) {
         let promises = [];
         if (brightnessHistoryLength > 0) {
           promises.push(
-            updateCraftAgentContext(agents[roomName].brightness, agents[roomName].brightnessHistory)
+            client.addAgentContextOperations(agents[roomName].brightness, agents[roomName].brightnessHistory)
             .then(() => agents[roomName].brightnessHistory = _.drop(agents[roomName].brightnessHistory, brightnessHistoryLength)));
         }
         if (colorHistoryLength > 0) {
           promises.push(
-            updateCraftAgentContext(agents[roomName].color, agents[roomName].colorHistory)
+            client.addAgentContextOperations(agents[roomName].color, agents[roomName].colorHistory)
             .then(() => agents[roomName].colorHistory = _.drop(agents[roomName].colorHistory, colorHistoryLength)));
         }
         return Promise.all(promises)
@@ -121,12 +128,12 @@ export default function startAutomation(store) {
     console.log(`Taking a decision for rooms ${rooms.join(', ')}...`);
     return Promise.all(_.map(rooms, (roomName) =>
       Promise.all([
-        getCraftAgentDecision(agents[roomName].brightness, {
+        client.computeAgentDecision(agents[roomName].brightness, timestamp(), {
           presence: strFromPresence(state.getIn([roomName, 'presence'])),
           tv: strFromTvState(state.getIn([roomName, 'tv'])),
           lightIntensity: state.getIn(['outside', 'lightIntensity'])
-        }, timestamp()),
-        getCraftAgentDecision(agents[roomName].color, {
+        }),
+        client.computeAgentDecision(agents[roomName].color, timestamp(), {
           presence: strFromPresence(state.getIn([roomName, 'presence'])),
           tv: strFromTvState(state.getIn([roomName, 'tv'])),
           lightIntensity: state.getIn(['outside', 'lightIntensity'])

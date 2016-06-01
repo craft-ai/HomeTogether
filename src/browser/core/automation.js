@@ -59,7 +59,8 @@ export default function startAutomation(store) {
   let client = craftai({
     owner: OWNER,
     token: CRAFT_TOKEN,
-    url: CRAFT_URL
+    url: CRAFT_URL,
+    operationsAdditionWait: 3 // Flush every 3 seconds, facilitate the demo!
   });
 
   // Extract the room having a light
@@ -68,15 +69,7 @@ export default function startAutomation(store) {
   let agents = enlightenedRooms.reduce((agents, roomName) => {
     agents[roomName] = {
       brightness: null,
-      color: null,
-      brightnessHistory: _.map(
-        INITIAL_BRIGHTNESS_HISTORY_FROM_LOCATION[roomName],
-        sample => _.set(_.clone(sample), 'timestamp', initialTimestamp + sample.timestamp)
-      ),
-      colorHistory:_.map(
-        INITIAL_COLOR_HISTORY_FROM_LOCATION[roomName],
-        sample => _.set(_.clone(sample), 'timestamp', initialTimestamp + sample.timestamp)
-      )
+      color: null
     };
     return agents;
   },
@@ -88,41 +81,27 @@ export default function startAutomation(store) {
       .then(agent => {
         console.log(`Agent ${agent.id} created for ${roomName} brightness`);
         agents[roomName].brightness = agent.id;
+        return client.addAgentContextOperations(agents[roomName].brightness, _.map(
+          INITIAL_BRIGHTNESS_HISTORY_FROM_LOCATION[roomName],
+          sample => _.set(_.clone(sample), 'timestamp', initialTimestamp + sample.timestamp)
+        ));
       })
       .then(() => client.createAgent(COLOR_MODEL_FROM_LOCATION[roomName], undefined, true))
       .then(agent => {
         console.log(`Agent ${agent.id} created for ${roomName} color`);
         agents[roomName].color = agent.id;
-
+        return client.addAgentContextOperations(agents[roomName].color, _.map(
+          INITIAL_COLOR_HISTORY_FROM_LOCATION[roomName],
+          sample => _.set(_.clone(sample), 'timestamp', initialTimestamp + sample.timestamp)
+        ));
+      })
+      .then(() => {
         // Providing the agent ids to the store.
         store.setAgentsId(roomName, agents[roomName].color, agents[roomName].brightness);
       })
       .catch(err => console.log(`Error while creating agent for ${roomName}`, err))
     ).toJSON()
   );
-
-  let sendAgentsContextHistory = () => {
-    console.log('Sending agent context history...');
-    return Promise.all(
-      enlightenedRooms.map((roomName) => {
-        const brightnessHistoryLength = agents[roomName].brightnessHistory.length;
-        const colorHistoryLength = agents[roomName].colorHistory.length;
-        let promises = [];
-        if (brightnessHistoryLength > 0) {
-          promises.push(
-            client.addAgentContextOperations(agents[roomName].brightness, agents[roomName].brightnessHistory)
-            .then(() => agents[roomName].brightnessHistory = _.drop(agents[roomName].brightnessHistory, brightnessHistoryLength)));
-        }
-        if (colorHistoryLength > 0) {
-          promises.push(
-            client.addAgentContextOperations(agents[roomName].color, agents[roomName].colorHistory)
-            .then(() => agents[roomName].colorHistory = _.drop(agents[roomName].colorHistory, colorHistoryLength)));
-        }
-        return Promise.all(promises)
-          .catch(err => console.log(`Error while updating the context history for ${roomName}`, err));
-      }).toJSON()
-    );
-  };
 
   let takeDecisions = (state, rooms) => {
     console.log(`Taking a decision for rooms ${rooms.join(', ')}...`);
@@ -149,82 +128,93 @@ export default function startAutomation(store) {
 
   // Let's create the agents
   return createAgents()
-  .then(() => sendAgentsContextHistory())
   .then(() => {
     console.log('Learning initialization done!');
     takeDecisions(store.getState(), enlightenedRooms.toJSON());
     store.on('update_light_color', (state, location, color) => {
       if (_.has(agents, location)) {
-        agents[location].colorHistory.push({
+        client.addAgentContextOperations(agents[location].color, {
           timestamp: timestamp(),
           diff: {
             lightbulbColor: color
           }
-        });
+        })
+        .catch(err => console.log('Error while updating the context history', err));
       }
     });
     store.on('update_light_brightness', (state, location, brightness) => {
       if (_.has(agents, location)) {
-        agents[location].brightnessHistory.push({
+        client.addAgentContextOperations(agents[location].brightness, {
           timestamp: timestamp(),
           diff: {
             lightbulbBrightness: `${brightness}`
           }
-        });
+        })
+        .catch(err => console.log('Error while updating the context history', err));
       }
     });
     store.on('update_tv_state', (state, location, tvState) => {
       if (_.has(agents, location)) {
-        agents[location].brightnessHistory.push({
-          timestamp: timestamp(),
-          diff: {
-            tv: strFromTvState(tvState)
-          }
-        });
-        agents[location].colorHistory.push({
-          timestamp: timestamp(),
-          diff: {
-            tv: strFromTvState(tvState)
-          }
-        });
-        console.log('update_tv_state');
-        takeDecisions(state, [location]);
+        return Promise.all([
+          client.addAgentContextOperations(agents[location].brightness, {
+            timestamp: timestamp(),
+            diff: {
+              tv: strFromTvState(tvState)
+            }
+          }),
+          client.addAgentContextOperations(agents[location].color, {
+            timestamp: timestamp(),
+            diff: {
+              tv: strFromTvState(tvState)
+            }
+          })
+        ])
+        .then(() => takeDecisions(state, [location]))
+        .catch(err => console.log('Error while updating the context history', err));
       }
     });
     store.on('update_presence', (state, location, presence) => {
       if (_.has(agents, location)) {
-        agents[location].brightnessHistory.push({
-          timestamp: timestamp(),
-          diff: {
-            presence: strFromPresence(presence)
-          }
-        });
-        agents[location].colorHistory.push({
-          timestamp: timestamp(),
-          diff: {
-            presence: strFromPresence(presence)
-          }
-        });
-        takeDecisions(state, [location]);
+        return Promise.all([
+          client.addAgentContextOperations(agents[location].brightness, {
+            timestamp: timestamp(),
+            diff: {
+              presence: strFromPresence(presence)
+            }
+          }),
+          client.addAgentContextOperations(agents[location].color, {
+            timestamp: timestamp(),
+            diff: {
+              presence: strFromPresence(presence)
+            }
+          })
+        ])
+        .then(() => takeDecisions(state, [location]))
+        .catch(err => console.log('Error while updating the context history', err));
       }
     });
     store.on('update_light_intensity', (state, location, intensity) => {
-      _.forEach(enlightenedRooms.toJSON(), roomName => {
-        agents[roomName].brightnessHistory.push({
-          timestamp: timestamp(),
-          diff: {
-            lightIntensity: intensity
-          }
-        });
-        agents[roomName].colorHistory.push({
-          timestamp: timestamp(),
-          diff: {
-            lightIntensity: intensity
-          }
-        });
-      });
-      takeDecisions(state, enlightenedRooms.toJSON());
+      Promise.all(
+        _(enlightenedRooms.toJSON())
+        .map(location => [
+          client.addAgentContextOperations(agents[location].brightness, {
+            timestamp: timestamp(),
+            diff: {
+              lightIntensity: intensity
+            }
+          }),
+          client.addAgentContextOperations(agents[location].color, {
+            timestamp: timestamp(),
+            diff: {
+              lightIntensity: intensity
+            }
+          })
+        ])
+        .flatten()
+        .value()
+      )
+      .catch(err => console.log('Error while updating the context history', err))
+      .then(() => takeDecisions(state,  enlightenedRooms.toJSON()));
     });
-    setInterval(sendAgentsContextHistory, 5000);
   });
 }

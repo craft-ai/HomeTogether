@@ -95,9 +95,18 @@ export default function startAutomation(store) {
           sample => _.set(_.clone(sample), 'timestamp', initialTimestamp + sample.timestamp)
         ));
       })
-      .then(() => {
+      .then(() => Promise.all([
+        client.getAgentInspectorUrl(agents[roomName].color, ''),
+        client.getAgentInspectorUrl(agents[roomName].brightness, '')
+      ]))
+      .then(([colorAgentUrl, brightnessAgentUrl]) => {
         // Providing the agent ids to the store.
-        store.setAgentsId(roomName, agents[roomName].color, agents[roomName].brightness);
+        store.setAgentsId(
+          roomName,
+          agents[roomName].color,
+          agents[roomName].brightness,
+          colorAgentUrl,
+          brightnessAgentUrl);
       })
       .catch(err => console.log(`Error while creating agent for ${roomName}`, err))
     ).toJSON()

@@ -1,6 +1,6 @@
 import craftai from 'craft-ai';
 import _ from 'lodash';
-import { CRAFT_TOKEN, CRAFT_URL, OWNER } from '../constants';
+import { CRAFT_TOKEN, CRAFT_URL, CRAFT_OWNER } from '../constants';
 
 const INITIAL_BRIGHTNESS_HISTORY_FROM_LOCATION = {
   'living_room': require('./tvInitialBrightnessHistory.json'),
@@ -57,7 +57,7 @@ function strFromTvState(state) {
 
 export default function startAutomation(store) {
   let client = craftai({
-    owner: OWNER,
+    owner: CRAFT_OWNER,
     token: CRAFT_TOKEN,
     url: CRAFT_URL,
     operationsAdditionWait: 3 // Flush every 3 seconds, facilitate the demo!
@@ -95,9 +95,18 @@ export default function startAutomation(store) {
           sample => _.set(_.clone(sample), 'timestamp', initialTimestamp + sample.timestamp)
         ));
       })
-      .then(() => {
+      .then(() => Promise.all([
+        client.getAgentInspectorUrl(agents[roomName].color, ''),
+        client.getAgentInspectorUrl(agents[roomName].brightness, '')
+      ]))
+      .then(([colorAgentUrl, brightnessAgentUrl]) => {
         // Providing the agent ids to the store.
-        store.setAgentsId(roomName, agents[roomName].color, agents[roomName].brightness);
+        store.setAgentsId(
+          roomName,
+          agents[roomName].color,
+          agents[roomName].brightness,
+          colorAgentUrl,
+          brightnessAgentUrl);
       })
       .catch(err => console.log(`Error while creating agent for ${roomName}`, err))
     ).toJSON()

@@ -101,10 +101,12 @@ export default class Store extends EventEmitter {
       this.onLightSensorUpdate('outside', intensity);
     }
   }
-  setAgentsId(location, colorAgent, brightnessAgent) {
+  setAgentsId(location, colorAgent, brightnessAgent, colorAgentUrl, brightnessAgentUrl) {
     const nextState = this.state
       .updateIn([location, 'agent', 'color'], () => colorAgent)
-      .updateIn([location, 'agent', 'brightness'], () => brightnessAgent);
+      .updateIn([location, 'agent', 'colorUrl'], () => colorAgentUrl)
+      .updateIn([location, 'agent', 'brightness'], () => brightnessAgent)
+      .updateIn([location, 'agent', 'brightnessUrl'], () => brightnessAgentUrl);
     if (!is(nextState, this.state)) {
       console.log(`Setting the agent name for ${location} to '${colorAgent}' (color) and '${brightnessAgent}' (bright).`);
       this.emit('update', nextState);

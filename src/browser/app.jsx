@@ -14,15 +14,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap-theme.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-function createAgentInspectorUrl(agent) {
-  if (_.isUndefined(agent)) {
-    return undefined;
-  }
-  else {
-    return `${CRAFT_URL}/inspector?owner=${OWNER}&agent=${agent}&token=${CRAFT_TOKEN}`;
-  }
-}
-
 export default React.createClass({
   getInitialState: function() {
     return {
@@ -54,8 +45,8 @@ export default React.createClass({
     })).toJSON();
     const robertLocationLight = lights[robertLocation];
     const outsideLightIntensity = this.state.house.getIn(['outside', 'lightIntensity']);
-    const colorAgentUrl = createAgentInspectorUrl(this.state.house.getIn([robertLocation, 'agent', 'color']));
-    const brightnessAgentUrl =  createAgentInspectorUrl(this.state.house.getIn([robertLocation, 'agent', 'brightness']));
+    const colorAgentUrl = this.state.house.getIn([robertLocation, 'agent', 'colorUrl']);
+    const brightnessAgentUrl =  this.state.house.getIn([robertLocation, 'agent', 'brightnessUrl']);
     return (
       <Grid>
         <Row>

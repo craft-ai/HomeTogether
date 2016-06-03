@@ -1,6 +1,6 @@
 import craftai from 'craft-ai';
 import _ from 'lodash';
-import { CRAFT_TOKEN, CRAFT_URL, OWNER } from '../constants';
+import { CRAFT_TOKEN, CRAFT_URL, CRAFT_OWNER } from '../constants';
 
 const INITIAL_BRIGHTNESS_HISTORY_FROM_LOCATION = {
   'living_room': require('./tvInitialBrightnessHistory.json'),
@@ -57,7 +57,7 @@ function strFromTvState(state) {
 
 export default function startAutomation(store) {
   let client = craftai({
-    owner: OWNER,
+    owner: CRAFT_OWNER,
     token: CRAFT_TOKEN,
     url: CRAFT_URL,
     operationsAdditionWait: 3 // Flush every 3 seconds, facilitate the demo!

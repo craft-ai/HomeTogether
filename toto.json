@@ -1,0 +1,27 @@
+{
+  "msg": {
+    "url": "https://beta.craft.ai/api/stanley_kubick/agents",
+    "method": "POST",
+    "headers": {
+      "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJnaXRodWJ8MTU3MzM2ODEiLCJvd25lciI6InN0YW5sZXlfa3ViaWNrIiwiaWF0IjoxNDY0OTYyNDU0LCJpc3MiOiJodHRwOi8vY3JhZnQuYWkiLCJqdGkiOiJmODJjMzU2Yi1hYjhkLTQ4OGQtODkzNy1jMzA0Yzc2MmMwMmYifQ.7nhCQTCAiBWeYVhGV-l5-gUjfWzGPKpE9XgmiE0AooA"
+    },
+    "payload": {
+      "id": "impervious_kraken",
+      "model": {
+        "context": {
+          "presence": {
+            "type": "enum"
+          },
+          "lightIntensity":  {
+            "type": "continuous"
+          },
+          "lightbulbColor": {
+            "type": "enum"
+          }
+        },
+        "output": ["lightbulbColor"],
+        "time_quantum": 100
+      }
+    }
+  }
+}

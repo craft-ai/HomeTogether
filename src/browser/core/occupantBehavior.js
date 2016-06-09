@@ -41,9 +41,9 @@ function computeNextLocation(currentLocation, playerLocation) {
       case 'living_room':
         return 'dining_room';
       case 'dining_room':
-        return _.sample(['living_room','living_room','corridor']);
+        return _.sample(['living_room', 'living_room', 'corridor']);
       case 'corridor':
-        return _.sample(['dining_room','dining_room','dining_room','bathroom','water_closet','bedroom']);
+        return _.sample(['dining_room', 'dining_room', 'dining_room', 'bathroom', 'water_closet', 'bedroom']);
       case 'bathroom':
         return 'corridor';
       case 'water_closet':
@@ -62,7 +62,7 @@ export default function startOccupantBehavior(store) {
       getCharacterLocation(store.getState(), 'gisele'),
       getCharacterLocation(store.getState(), 'robert'));
     store.setCharacterLocation('gisele', nextLocation);
-    setTimeout(wander, _.random(6,12)*1000);
+    setTimeout(wander, _.random(6, 12)*1000);
   };
   wander();
 }

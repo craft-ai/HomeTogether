@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import Promise from 'bluebird';
 import WebSocket from 'ws';
-import {hexToRGB,RGBtoHex} from '../lib/colorHelper';
-import { createLight, createTv, createPresenceDetector, createLightSensor } from './devices';
+import { hexToRGB, RGBtoHex } from '../lib/colorHelper';
+import { createLight, createTv, createLightSensor } from './devices';
 
 const API_BASE_WS_URL = 'wss://api.samsungsami.io/v1.1/';
 
@@ -64,25 +64,25 @@ export default function createSimulatedBackend() {
   function updateSamiDeviceState(deviceName, deviceState) {
     if (_.has(devices, deviceName) && !_.isEqual(devices[deviceName].state, deviceState))
       devices[deviceName].state = _.extend(devices[deviceName].state, deviceState);
-      return devices[deviceName].state;
-  };
+    return devices[deviceName].state;
+  }
 
   function sendMessageToDevice(deviceName, messageContent, type='message') {
     return new Promise((resolve, reject) => {
       if (!_.isUndefined(ws)) {
         let message = {
-                        ddid: devices[deviceName].id,
-                        sdid: devices[deviceName].id, 
-                        type: type,
-                        data: messageContent
-                      };
+          ddid: devices[deviceName].id,
+          sdid: devices[deviceName].id,
+          type: type,
+          data: messageContent
+        };
         ws.send(JSON.stringify(message));
         return resolve();
       }
       else
         return reject(Error('SAMI websocket not found'));
     });
-  };
+  }
 
   function sendActionsToDevice(deviceName, deviceState) {
     let actions = [];
@@ -96,9 +96,9 @@ export default function createSimulatedBackend() {
     }
     if (!_.isUndefined(deviceState.brightness)) {
       if (deviceState.brightness == 0)
-        actions.push({name: 'setOff'});
+        actions.push({ name: 'setOff' });
       else
-        actions = _.union([{name: 'setOn'},{
+        actions = _.union([{ name: 'setOn' }, {
           name: 'setBrightness',
           parameters: {
             brightness: parseFloat(deviceState.brightness) * 100
@@ -106,11 +106,11 @@ export default function createSimulatedBackend() {
         }], actions);
     }
     if (_.size(actions) > 0)
-      sendMessageToDevice(deviceName, {actions: actions}, 'action')
+      sendMessageToDevice(deviceName, { actions: actions }, 'action')
       .then(() => Promise.resolve());
     else
       return Promise.resolve();
-  };
+  }
 
   function createListenerWS(samiToken) {
     return new Promise((resolve, reject) => {
@@ -122,7 +122,7 @@ export default function createSimulatedBackend() {
         if (!_.isUndefined(evtJSON)) {
           if (evtJSON.type === 'action') {
             let deviceName = _.findKey(devices, d => d.id === evtJSON.ddid);
-            let deviceState = _.reduce(evtJSON.data.actions, (r,v,k) => {
+            let deviceState = _.reduce(evtJSON.data.actions, (r, v, k) => {
               switch (v.name) {
                 case 'setColorRGB':
                   r.color = RGBtoHex(v.parameters.colorRGB);
@@ -134,15 +134,16 @@ export default function createSimulatedBackend() {
                   r.brightness = 0;
                   break;
                 case 'setOn':
+                default:
                   r.brightness = r.brightness || 1 ;
                   break;
-              };
+              }
               return r;
             }, {});
             deviceState.brightness = deviceState.brightness.toFixed(1);
             updateSamiDeviceState(deviceName, deviceState);
             sendMessageToDevice(deviceName, deviceState);
-          };
+          }
         }
       });
       ws.on('open', () => {
@@ -151,10 +152,10 @@ export default function createSimulatedBackend() {
           _.map(devices, (val, key) => {
             if (!_.isUndefined(val.id)) {
               let message = {
-                              Authorization: 'bearer ' + val.token,
-                              sdid: val.id,
-                              type: 'register'
-                            };
+                Authorization: 'bearer ' + val.token,
+                sdid: val.id,
+                type: 'register'
+              };
               console.log('Registering SAMI device', key);
               return Promise.resolve(ws.send(JSON.stringify(message)))
               .then(() => sendActionsToDevice(key, val.state));
@@ -175,10 +176,10 @@ export default function createSimulatedBackend() {
     })
     .catch(ex => {
       console.log('Error in function createListenerWS:', ex);
-      return reject();
+      return Promise.reject(ex);
     });
-  };
-  
+  }
+
   return {
     name: 'sami',
     init: samiToken => createListenerWS(samiToken),
@@ -196,7 +197,7 @@ export default function createSimulatedBackend() {
     update: (deviceName, state) => new Promise((resolve, reject) => {
       // console.log(`Updating device '${deviceName}' state.`);
       if (_.has(devices, deviceName)) {
-        let newState = updateSamiDeviceState(deviceName, state)
+        let newState = updateSamiDeviceState(deviceName, state);
         sendActionsToDevice(deviceName, newState);
         resolve(newState);
       }

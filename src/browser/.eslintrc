@@ -1,0 +1,8 @@
+{
+  "globals": {
+    "__CRAFT_TOKEN__": true,
+    "__CRAFT_URL__": true,
+    "__CRAFT_OWNER__": true,
+    "__SERVER_SIDE_DEVICES__": true
+  }
+}

@@ -18,7 +18,7 @@ const INITIAL_DEVICES = {
   'bedroom+light': createLight(),
   'outside+presence': createPresenceDetector(),
   'outside+lightSensor': createLightSensor()
-}
+};
 
 export default function createSimulatedBackend() {
   let devices = _.cloneDeep(INITIAL_DEVICES);

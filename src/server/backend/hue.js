@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Promise from 'bluebird';
-import {convertHexToXY, convertXYtoHex} from '../lib/colorHelper';
+import { convertHexToXY, convertXYtoHex } from '../lib/colorHelper';
 import { createLight } from './devices';
 
 function hueRetrieveUser(settings) {
@@ -19,7 +19,7 @@ function hueRetrieveUser(settings) {
         body: JSON.stringify({
           devicetype: 'home_together#craft_hue',
           username: settings.user
-        })})
+        }) })
       .then(res => res.json())
       .then(json => {
         let r = _.first(json);
@@ -31,7 +31,7 @@ function hueRetrieveUser(settings) {
         else {
           if (!_.isUndefined(r.error) && !_.isUndefined(r.error.type) && r.error.type === 101) {
             console.log(r.error.description);
-            setTimeout(() => hueRetrieveUser(settings),5000);
+            setTimeout(() => hueRetrieveUser(settings), 5000);
           }
           else
             return Promise.reject(r.error.description);

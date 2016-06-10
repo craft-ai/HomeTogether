@@ -96,8 +96,8 @@ export default function startAutomation(store) {
         ));
       })
       .then(() => Promise.all([
-        client.getAgentInspectorUrl(agents[roomName].color, ''),
-        client.getAgentInspectorUrl(agents[roomName].brightness, '')
+        client.getAgentInspectorUrl(agents[roomName].color),
+        client.getAgentInspectorUrl(agents[roomName].brightness)
       ]))
       .then(([colorAgentUrl, brightnessAgentUrl]) => {
         // Providing the agent ids to the store.

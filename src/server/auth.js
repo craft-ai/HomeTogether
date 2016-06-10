@@ -1,6 +1,5 @@
 import express from 'express';
 import _ from 'lodash';
-import Promise from 'bluebird';
 import passport from 'passport';
 import OAuth2Strategy from 'passport-oauth2/lib/strategy';
 
@@ -27,12 +26,12 @@ export default function createMiddleware(backends){
       done(null, 'user');
     });
     passport.use(new OAuth2Strategy({
-        authorizationURL: AUTH_URL,
-        tokenURL: TOKEN_URL,
-        clientID: CLIENT_ID,
-        clientSecret: CLIENT_SECRET,
-        callbackURL: CALL_BACK_URL
-      },
+      authorizationURL: AUTH_URL,
+      tokenURL: TOKEN_URL,
+      clientID: CLIENT_ID,
+      clientSecret: CLIENT_SECRET,
+      callbackURL: CALL_BACK_URL
+    },
       (accessToken, refreshToken, profile, done) => {
         samiBackend.init(accessToken);
         return done(null, 'user');

@@ -164,7 +164,8 @@ export default function startAutomation(store) {
     });
     store.on('update_tv_state', (state, location, tvState) => {
       if (_.has(agents, location)) {
-        return Promise.all([
+        return takeDecisions(state, [location])
+        .then(() => Promise.all([
           client.addAgentContextOperations(agents[location].brightness, {
             timestamp: timestamp(),
             diff: {
@@ -177,14 +178,14 @@ export default function startAutomation(store) {
               tv: strFromTvState(tvState)
             }
           })
-        ])
-        .then(() => takeDecisions(state, [location]))
+        ]))
         .catch(err => console.log('Error while updating the context history', err));
       }
     });
     store.on('update_presence', (state, location, presence) => {
       if (_.has(agents, location)) {
-        return Promise.all([
+        return takeDecisions(state, [location])
+        .then(() =>  Promise.all([
           client.addAgentContextOperations(agents[location].brightness, {
             timestamp: timestamp(),
             diff: {
@@ -197,13 +198,13 @@ export default function startAutomation(store) {
               presence: strFromPresence(presence)
             }
           })
-        ])
-        .then(() => takeDecisions(state, [location]))
+        ]))
         .catch(err => console.log('Error while updating the context history', err));
       }
     });
     store.on('update_light_intensity', (state, location, intensity) => {
-      Promise.all(
+      takeDecisions(state,  enlightenedRooms.toJSON())
+      .then(() =>Promise.all(
         _(enlightenedRooms.toJSON())
         .map(location => [
           client.addAgentContextOperations(agents[location].brightness, {
@@ -221,9 +222,8 @@ export default function startAutomation(store) {
         ])
         .flatten()
         .value()
-      )
-      .catch(err => console.log('Error while updating the context history', err))
-      .then(() => takeDecisions(state,  enlightenedRooms.toJSON()));
+      ))
+      .catch(err => console.log('Error while updating the context history', err));
     });
   });
 }

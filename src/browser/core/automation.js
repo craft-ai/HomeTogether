@@ -2,6 +2,12 @@ import craftai from 'craft-ai';
 import _ from 'lodash';
 import { CRAFT_TOKEN, CRAFT_URL, CRAFT_OWNER } from '../constants';
 
+let agentsToDeleteOnExit = [];
+
+export function getAgentsToDeleteOnExit() {
+  return agentsToDeleteOnExit;
+}
+
 const INITIAL_BRIGHTNESS_HISTORY_FROM_LOCATION = {
   'living_room': require('./tvInitialBrightnessHistory.json'),
   'dining_room': require('./initialBrightnessHistory.json'),
@@ -77,8 +83,10 @@ export default function startAutomation(store) {
 
   let createAgents = () => Promise.all(
     enlightenedRooms.map((roomName) =>
-      client.createAgent(BRIGHTNESS_MODEL_FROM_LOCATION[roomName], undefined, true)
+      client.createAgent(BRIGHTNESS_MODEL_FROM_LOCATION[roomName])
       .then(agent => {
+        agentsToDeleteOnExit.push(agent.id);
+        console.log('agentsToDeleteOnExit', agentsToDeleteOnExit);
         console.log(`Agent ${agent.id} created for ${roomName} brightness`);
         agents[roomName].brightness = agent.id;
         return client.addAgentContextOperations(agents[roomName].brightness, _.map(
@@ -86,8 +94,11 @@ export default function startAutomation(store) {
           sample => _.set(_.clone(sample), 'timestamp', initialTimestamp + sample.timestamp)
         ));
       })
-      .then(() => client.createAgent(COLOR_MODEL_FROM_LOCATION[roomName], undefined, true))
+      .then(() => client.createAgent(COLOR_MODEL_FROM_LOCATION[roomName]))
       .then(agent => {
+        console.log('agent', agent);
+        agentsToDeleteOnExit.push(agent.id);
+        console.log('agentsToDeleteOnExit', agentsToDeleteOnExit);
         console.log(`Agent ${agent.id} created for ${roomName} color`);
         agents[roomName].color = agent.id;
         return client.addAgentContextOperations(agents[roomName].color, _.map(

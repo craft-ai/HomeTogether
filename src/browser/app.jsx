@@ -1,18 +1,35 @@
 import _ from 'lodash';
-import { CRAFT_TOKEN, CRAFT_URL, OWNER } from './constants';
-import { getInitialState, getCharacterLocation } from './core/store';
-import { Grid, Row, Col } from 'react-bootstrap';
 import ColorPicker from './components/colorPicker';
 import DayAndNight from './components/dayAndNight';
 import FloorMap from './components/floorMap';
-import Lights from './components/lights';
 import Gisele from './components/gisele';
-import Robert from './components/robert';
+import Lights from './components/lights';
 import React from 'react';
+import request from './core/request';
+import Robert from './components/robert';
+import { CRAFT_TOKEN, CRAFT_URL, OWNER } from './constants';
+import { getAgentsToDeleteOnExit } from './core/automation';
+import { getInitialState, getCharacterLocation } from './core/store';
+import { Grid, Row, Col } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap-theme.min.css';
 import 'font-awesome/css/font-awesome.min.css';
+
+function onExit() {
+  const agentsToDeleteOnExit = getAgentsToDeleteOnExit();
+  console.log('TO DELETE', agentsToDeleteOnExit);
+  if (agentsToDeleteOnExit.length > 0) {
+    console.log(`Deleting agents ${ _.map(agentsToDeleteOnExit, agent => `'${agent}'`).join(', ') } before exiting...`);
+    _.forEach(agentsToDeleteOnExit, agentId => {
+      console.log('agentId', agentId);
+      request({
+        method: 'DELETE',
+        path: '/agents/' + agentId
+      });
+    });
+  }
+}
 
 export default React.createClass({
   getInitialState: function() {
@@ -27,6 +44,9 @@ export default React.createClass({
       });
     };
     this.props.store.on('update', this.storeListener);
+  },
+  componentDidMount: function() {
+    window.addEventListener('beforeunload', onExit);
   },
   componentWillUnmount: function() {
     this.props.store.off('update', this.storeListener);

@@ -44,7 +44,7 @@
     "bluebird": "3.3.4",
     "body-parser": "1.15.0",
     "bootstrap": "3.3.6",
-    "craft-ai": "0.1.5",
+    "craft-ai": "0.1.16",
     "dotenv": "2.0.0",
     "express": "4.13.4",
     "font-awesome": "4.5.0",
@@ -59,6 +59,7 @@
     "react-bootstrap": "0.28.3",
     "react-dom": "0.14.7",
     "react-motion": "0.4.2",
+    "sync-request": "3.0.1",
     "webpack": "1.13.1",
     "ws": "1.0.1"
   }

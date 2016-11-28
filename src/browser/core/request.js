@@ -11,7 +11,7 @@ export default function synchronousRequest(req) {
     headers: {}
   });
 
-  req.url = CRAFT_URL + '/api/' + CRAFT_OWNER + req.path;
+  req.url = CRAFT_URL + '/api/v1/' + CRAFT_OWNER + req.path;
   if (_.size(req.query) > 0) {
     req.url = req.url + '?' + _.map(_.keys(req.query), key => `${key}=${req.query[key]}`).join('&');
   }

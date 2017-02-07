@@ -1,6 +1,6 @@
 import React from 'react';
 
-import bulb from './bulb.png';
+import bulb from './Bulb.png';
 
 function hexToRGB(hex) {
   var intColor = parseInt(hex.split('#')[1], 16);
@@ -21,7 +21,7 @@ function hexToRGB(hex) {
 function hslToRgb(h, s, l){
   var r, g, b;
 
-  if(s == 0){
+  if(s === 0){
     r = g = b = l; // achromatic
   }
   else {
@@ -56,11 +56,13 @@ function hslToRgb(h, s, l){
  * @return  Array           The HSL representation
  */
 function rgbToHsl(r, g, b){
-  r /= 255, g /= 255, b /= 255;
+  r /= 255;
+  g /= 255;
+  b /= 255;
   var max = Math.max(r, g, b), min = Math.min(r, g, b);
   var h, s, l = (max + min) / 2;
 
-  if(max == min){
+  if(max === min){
     h = s = 0; // achromatic
   }else{
     var d = max - min;
@@ -68,6 +70,7 @@ function rgbToHsl(r, g, b){
     switch(max){
       case r: h = (g - b) / d + (g < b ? 6 : 0); break;
       case g: h = (b - r) / d + 2; break;
+      default:
       case b: h = (r - g) / d + 4; break;
     }
     h /= 6;

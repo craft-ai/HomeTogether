@@ -49,7 +49,7 @@ function timestamp() {
 }
 
 function strFromPresence(presence) {
-  if (presence.size == 0) {
+  if (presence.size === 0) {
     return 'none';
   }
   else {

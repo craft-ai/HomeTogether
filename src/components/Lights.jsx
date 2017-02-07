@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import Bulb from './bulb.jsx';
+import Bulb from './Bulb';
 
 const POSITION_FROM_ROOM = {
   living_room: {x:200, y:530},

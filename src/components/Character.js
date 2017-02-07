@@ -49,6 +49,7 @@ export default React.createClass({
         }}>
         { interpolatedStyle => (
           <img
+            role='presentation'
             src={this.props.image}
             style={_.extend(_.clone(CHARACTER_DEFAULT_STYLE), {
               WebkitTransform: `translate3d(${interpolatedStyle.x}px, ${interpolatedStyle.y}px, 0)`,

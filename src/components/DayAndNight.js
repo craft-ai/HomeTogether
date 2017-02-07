@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
-import './dayAndNight.css';
+import './DayAndNight.css';
 
 export default React.createClass({
   handleLightChange(event) {

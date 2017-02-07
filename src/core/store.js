@@ -96,7 +96,7 @@ export default class Store extends EventEmitter {
   }
   setOutsideLightIntensity(intensity) {
     const currentLightIntensity = this.state.getIn(['outside', 'lightIntensity']);
-    if (intensity != currentLightIntensity) {
+    if (intensity !== currentLightIntensity) {
       console.log(`Setting the outside light intensity to ${intensity}.`);
       this.onLightSensorUpdate('outside', intensity);
     }

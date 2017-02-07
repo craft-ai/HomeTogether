@@ -1,8 +1,7 @@
 import React from 'react';
-import { Row, Col } from 'react-bootstrap';
 import _ from 'lodash';
 
-import './colorPicker.css';
+import './ColorPicker.css';
 
 export default React.createClass({
   handleColorChange(color) {

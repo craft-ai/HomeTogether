@@ -1,8 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
 
-import home from './home.png';
-import tv from './tv.png';
+import home from './Home.png';
+import tv from './Tv.png';
 
 const BBOXES = {
   tv: [102,447,130,633],
@@ -22,6 +22,7 @@ export default React.createClass({
     if (this.props.tv) {
       return (
         <img
+          role='presentation'
           src={tv}
           style={{
             position: 'absolute',

@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import Character from './character';
+import Character from './Character';
 import React from 'react';
 
-import robert from './robert.png';
+import robert from './Robert.png';
 
 const POSITION_FROM_ROOM = {
   living_room: {

@@ -1,18 +1,20 @@
 import App from './App';
-import automation from './core/automation';
-import occupantBehavior from './core/occupantBehavior';
+import createHouseObservable from './core/houseObservable';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Store from './core/store';
 
 import './index.css';
 
-let store = new Store();
+const houseObservable = createHouseObservable();
 
 ReactDOM.render(
-  <App store={store}/>,
+  <App
+    houseObservable={ houseObservable }
+    onUpdateTV={ houseObservable.nextTvState }
+    onMovePlayer={ houseObservable.nextRobertLocation }
+    onUpdateOutsideLightIntensity={ houseObservable.nextOutsideLightIntensity }
+    onUpdateLocationLightColor={ houseObservable.nextLocationLightColor }
+    onUpdateLocationLightBrightness={ houseObservable.nextLocationLightBrightness }
+    />,
   document.getElementById('root')
 );
-
-occupantBehavior(store);
-automation(store);

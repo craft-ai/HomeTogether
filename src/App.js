@@ -8,7 +8,7 @@ import React from 'react';
 import request from './core/request';
 import Robert from './components/Robert';
 import { getAgentsToDeleteOnExit } from './core/automation';
-import { getInitialState, getCharacterLocation } from './core/store';
+import House from './core/House';
 import { Grid, Row, Col } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -33,29 +33,23 @@ function onExit() {
 export default React.createClass({
   getInitialState: function() {
     return {
-      house: getInitialState()
+      house: new House()
     };
-  },
-  componentWillMount: function() {
-    this.storeListener = state => {
-      this.setState({
-        house: state
-      });
-    };
-    this.props.store.on('update', this.storeListener);
   },
   componentDidMount: function() {
-    window.addEventListener('beforeunload', onExit);
+    this.subscription = this.props.houseObservable.subscribe(house => this.setState({house: house}));
   },
   componentWillUnmount: function() {
-    this.props.store.off('update', this.storeListener);
-    this.storeListener = undefined;
+    this.subscription.unsubscribe();
   },
   render: function() {
-    const tvState = this.state.house.getIn(['living_room', 'tv']);
-    const robertLocation = getCharacterLocation(this.state.house, 'robert');
-    const giseleLocation = getCharacterLocation(this.state.house, 'gisele');
-    const lights = this.state.house
+    const { house } = this.state;
+    const { onUpdateTV, onMovePlayer, onUpdateOutsideLightIntensity, onUpdateLocationLightColor, onUpdateLocationLightBrightness } = this.props;
+    const tvState = house.getIn(['living_room', 'tv']);
+    const robertLocation = house.getCharacterLocation('robert');
+    const giseleLocation = house.getCharacterLocation('gisele');
+    const lights = house
+    .toMap()
     .filter(location => location.has('light'))
     .map(location => ({
       color: location.getIn(['light', 'color']),
@@ -63,17 +57,17 @@ export default React.createClass({
       visible: true
     })).toJSON();
     const robertLocationLight = lights[robertLocation];
-    const outsideLightIntensity = this.state.house.getIn(['outside', 'lightIntensity']);
-    const colorAgentUrl = this.state.house.getIn([robertLocation, 'agent', 'colorUrl']);
-    const brightnessAgentUrl =  this.state.house.getIn([robertLocation, 'agent', 'brightnessUrl']);
+    const outsideLightIntensity = house.getIn(['outside', 'lightIntensity']);
+    const colorAgentUrl = house.getIn([robertLocation, 'agents', 'color', 'inspectorUrl']);
+    const brightnessAgentUrl =  house.getIn([robertLocation, 'agents', 'brightness', 'inspectorUrl']);
     return (
       <Grid>
         <Row>
           <Col xs={12} lg={8}>
             <FloorMap
               tv={tvState}
-              onUpdateTV={val => this.props.store.setTvState(val)}
-              onMovePlayer={location => this.props.store.setCharacterLocation('robert', location)} />
+              onUpdateTV={ onUpdateTV }
+              onMovePlayer={ onMovePlayer } />
             <Robert location={robertLocation} />
             <Gisele location={giseleLocation} />
             <Lights lights={lights} />
@@ -81,7 +75,7 @@ export default React.createClass({
           <Col xs={12} lg={4} style={{paddingTop:'100px', paddingBottom:'100px'}}>
             <DayAndNight
               light={outsideLightIntensity}
-              onUpdateLight={(val) => this.props.store.setOutsideLightIntensity(val)}/>
+              onUpdateLight={ onUpdateOutsideLightIntensity }/>
             {
               robertLocationLight && robertLocationLight.visible ?
               (
@@ -91,8 +85,8 @@ export default React.createClass({
                   brightness={robertLocationLight.brightness}
                   colorAgentUrl={colorAgentUrl}
                   brightnessAgentUrl={brightnessAgentUrl}
-                  onUpdateColor={color => this.props.store.setLocationLightColor(robertLocation, color)}
-                  onUpdateBrightness={brightness => this.props.store.setLocationLightBrightness(robertLocation, brightness)}/>
+                  onUpdateColor={color => onUpdateLocationLightColor(robertLocation, color)}
+                  onUpdateBrightness={brightness => onUpdateLocationLightBrightness(robertLocation, brightness)}/>
               ) : (
                 void 0
               )

@@ -7,14 +7,12 @@
       "type": "enum"
     },
     "lightIntensity":  {
-      "type": "continuous",
-      "min": 0,
-      "max": 2.5
+      "type": "continuous"
     },
-    "lightbulbColor": {
+    "lightbulbBrightness": {
       "type": "enum"
     }
   },
-  "output": ["lightbulbColor"],
+  "output": ["lightbulbBrightness"],
   "time_quantum": 2
 }

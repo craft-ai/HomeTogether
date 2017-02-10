@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { getCharacterLocation } from './store';
+import Rx from 'rxjs/Rx';
 
 function computeNextLocation(currentLocation, playerLocation) {
   if (playerLocation === 'living_room' || playerLocation === 'dining_room') {
@@ -55,14 +55,22 @@ function computeNextLocation(currentLocation, playerLocation) {
   }
 }
 
-export default function startOccupantBehavior(store) {
-  let wander;
-  wander = function() {
-    const nextLocation = computeNextLocation(
-      getCharacterLocation(store.getState(), 'gisele'),
-      getCharacterLocation(store.getState(), 'robert'));
-    store.setCharacterLocation('gisele', nextLocation);
-    setTimeout(wander, _.random(6, 12)*1000);
-  };
-  wander();
+function wander(house) {
+  const nextLocation = computeNextLocation(
+    house.getCharacterLocation('gisele'),
+    house.getCharacterLocation('robert')
+  );
+  console.log(`Moving Gisele to ${nextLocation}.`);
+  return house.setCharacterLocation('gisele', nextLocation);
 }
+
+export default function createGiseleObservable() {
+  return Rx.Observable.create(observer => {
+    let generateAndScheduleNext = () => {
+      observer.next();
+      setTimeout(generateAndScheduleNext, _.random(6, 12)*1000);
+    };
+    generateAndScheduleNext();
+  })
+  .map(() => house => wander(house));
+};

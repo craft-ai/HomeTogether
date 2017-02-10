@@ -4,9 +4,7 @@
       "type": "enum"
     },
     "lightIntensity":  {
-      "type": "continuous",
-      "min": 0,
-      "max": 2.5
+      "type": "continuous"
     },
     "lightbulbBrightness": {
       "type": "enum"

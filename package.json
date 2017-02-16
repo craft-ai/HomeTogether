@@ -17,7 +17,6 @@
     "watch": "nodemon --exec 'npm run dev'",
     "lint": "eslint .",
     "fix_lint": "eslint --fix .",
-    "postinstall": "cd node_modules/craft-ai && npm install && npm run build",
     "gh_deploy": "./gh-deploy.sh"
   },
   "license": "BSD-3-Clause",

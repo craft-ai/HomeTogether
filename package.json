@@ -17,7 +17,6 @@
     "watch": "nodemon --exec 'npm run dev'",
     "lint": "eslint .",
     "fix_lint": "eslint --fix .",
-    "postinstall": "cd node_modules/craft-ai && npm install && npm run build",
     "gh_deploy": "./gh-deploy.sh"
   },
   "license": "BSD-3-Clause",
@@ -45,7 +44,7 @@
     "bluebird": "3.3.4",
     "body-parser": "1.15.0",
     "bootstrap": "3.3.6",
-    "craft-ai": "git://github.com/craft-ai/craft-ai-client-js.git#feature/ClientHandleIntervals",
+    "craft-ai": "0.1.20",
     "dotenv": "2.0.0",
     "express": "4.13.4",
     "font-awesome": "4.5.0",

@@ -26,6 +26,10 @@ To begin with you'll need to do to the following:
         CRAFT_URL=https://beta.craft.ai
         # Replace the following value by the token you were provided with.
         CRAFT_TOKEN=abcde.fghij.klmnopqr
+        # Replace the following value by the owner of yoour project.
+        CRAFT_OWNER=toto
+        # Replace the following value by the project for your agents.
+        CRAFT_PROJECT=text_project
 
 ### Fully Simulated ###
 

@@ -18,6 +18,7 @@ module.exports = {
     new webpack.DefinePlugin({
       __CRAFT_URL__: JSON.stringify(process.env.CRAFT_URL),
       __CRAFT_OWNER__: JSON.stringify(process.env.CRAFT_OWNER),
+      __CRAFT_PROJECT__: JSON.stringify(process.env.CRAFT_PROJECT),
       __CRAFT_TOKEN__: JSON.stringify(process.env.CRAFT_TOKEN),
       __SERVER_SIDE_DEVICES__: JSON.stringify(process.env.SERVER_SIDE_DEVICES)
     })

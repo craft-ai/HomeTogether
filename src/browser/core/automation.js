@@ -1,6 +1,6 @@
 import craftai from 'craft-ai';
 import _ from 'lodash';
-import { CRAFT_TOKEN, CRAFT_URL, CRAFT_OWNER } from '../constants';
+import { CRAFT_TOKEN, CRAFT_URL, CRAFT_OWNER, CRAFT_PROJECT } from '../constants';
 
 let agentsToDeleteOnExit = [];
 
@@ -65,6 +65,7 @@ export default function startAutomation(store) {
   let client = craftai({
     owner: CRAFT_OWNER,
     token: CRAFT_TOKEN,
+    project: CRAFT_PROJECT,
     url: CRAFT_URL,
     operationsAdditionWait: 3 // Flush every 3 seconds, facilitate the demo!
   });

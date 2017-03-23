@@ -175,17 +175,18 @@ export default function startAutomation(store) {
       }
     });
     store.on('update_tv_state', (state, location, tvState) => {
+      const now = timestamp();
       if (_.has(agents, location)) {
         return takeDecisions(state, [location])
         .then(() => Promise.all([
           client.addAgentContextOperations(agents[location].brightness, {
-            timestamp: timestamp(),
+            timestamp: now,
             diff: {
               tv: strFromTvState(tvState)
             }
           }),
           client.addAgentContextOperations(agents[location].color, {
-            timestamp: timestamp(),
+            timestamp: now,
             diff: {
               tv: strFromTvState(tvState)
             }
@@ -195,17 +196,18 @@ export default function startAutomation(store) {
       }
     });
     store.on('update_presence', (state, location, presence) => {
+      const now = timestamp();
       if (_.has(agents, location)) {
         return takeDecisions(state, [location])
         .then(() =>  Promise.all([
           client.addAgentContextOperations(agents[location].brightness, {
-            timestamp: timestamp(),
+            timestamp: now,
             diff: {
               presence: strFromPresence(presence)
             }
           }),
           client.addAgentContextOperations(agents[location].color, {
-            timestamp: timestamp(),
+            timestamp: now,
             diff: {
               presence: strFromPresence(presence)
             }
@@ -215,18 +217,19 @@ export default function startAutomation(store) {
       }
     });
     store.on('update_light_intensity', (state, location, intensity) => {
+      const now = timestamp();
       takeDecisions(state,  enlightenedRooms.toJSON())
-      .then(() =>Promise.all(
+      .then(() => Promise.all(
         _(enlightenedRooms.toJSON())
         .map(location => [
           client.addAgentContextOperations(agents[location].brightness, {
-            timestamp: timestamp(),
+            timestamp: now,
             diff: {
               lightIntensity: intensity
             }
           }),
           client.addAgentContextOperations(agents[location].color, {
-            timestamp: timestamp(),
+            timestamp: now,
             diff: {
               lightIntensity: intensity
             }

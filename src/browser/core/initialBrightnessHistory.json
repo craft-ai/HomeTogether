@@ -1,7 +1,7 @@
 [
   {
     "timestamp": -100,
-    "diff": {
+    "context": {
       "presence": "gisele",
       "lightIntensity": 0,
       "lightbulbBrightness": "1"
@@ -9,7 +9,7 @@
   },
   {
     "timestamp": -95,
-    "diff": {
+    "context": {
       "presence": "gisele",
       "lightIntensity": 0.5,
       "lightbulbBrightness": "0.8"
@@ -17,7 +17,7 @@
   },
   {
     "timestamp": -90,
-    "diff": {
+    "context": {
       "presence": "robert",
       "lightIntensity": 0,
       "lightbulbBrightness": "1"
@@ -25,7 +25,7 @@
   },
   {
     "timestamp": -85,
-    "diff": {
+    "context": {
       "presence": "robert",
       "lightIntensity": 0.5,
       "lightbulbBrightness": "0.8"
@@ -33,7 +33,7 @@
   },
   {
     "timestamp": -80,
-    "diff": {
+    "context": {
       "presence": "gisele",
       "lightIntensity": 1,
       "lightbulbBrightness": "0"
@@ -41,7 +41,7 @@
   },
   {
     "timestamp": -70,
-    "diff": {
+    "context": {
       "presence": "robert",
       "lightIntensity": 1,
       "lightbulbBrightness": "0"
@@ -49,7 +49,7 @@
   },
   {
     "timestamp": -60,
-    "diff": {
+    "context": {
       "presence": "none",
       "lightIntensity": 0,
       "lightbulbBrightness": "0"
@@ -57,7 +57,7 @@
   },
   {
     "timestamp": -30,
-    "diff": {
+    "context": {
       "presence": "none",
       "lightIntensity": 0.5,
       "lightbulbBrightness": "0"
@@ -65,7 +65,7 @@
   },
   {
     "timestamp": -15,
-    "diff": {
+    "context": {
       "presence": "none",
       "lightIntensity": 1,
       "lightbulbBrightness": "0"

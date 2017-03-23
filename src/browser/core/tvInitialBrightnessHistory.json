@@ -1,7 +1,7 @@
 [
   {
     "timestamp": -130,
-    "diff": {
+    "context": {
       "presence": "gisele",
       "lightIntensity": 0,
       "tv": "off",
@@ -10,7 +10,7 @@
   },
   {
     "timestamp": -120,
-    "diff": {
+    "context": {
       "presence": "gisele",
       "lightIntensity": 0.5,
       "tv": "on",
@@ -19,7 +19,7 @@
   },
   {
     "timestamp": -110,
-    "diff": {
+    "context": {
       "presence": "gisele",
       "lightIntensity": 0.5,
       "tv": "off",
@@ -28,7 +28,7 @@
   },
   {
     "timestamp": -100,
-    "diff": {
+    "context": {
       "presence": "gisele",
       "lightIntensity": 0,
       "tv": "on",
@@ -37,7 +37,7 @@
   },
   {
     "timestamp": -90,
-    "diff": {
+    "context": {
       "presence": "robert",
       "lightIntensity": 0,
       "tv": "on",
@@ -46,7 +46,7 @@
   },
   {
     "timestamp": -80,
-    "diff": {
+    "context": {
       "presence": "robert",
       "lightIntensity": 0,
       "tv": "off",
@@ -55,7 +55,7 @@
   },
   {
     "timestamp": -70,
-    "diff": {
+    "context": {
       "presence": "robert",
       "lightIntensity": 0.5,
       "tv": "on",
@@ -64,7 +64,7 @@
   },
   {
     "timestamp": -60,
-    "diff": {
+    "context": {
       "presence": "robert",
       "lightIntensity": 0.5,
       "tv": "off",
@@ -73,7 +73,7 @@
   },
   {
     "timestamp": -50,
-    "diff": {
+    "context": {
       "presence": "gisele",
       "lightIntensity": 1,
       "tv": "off",
@@ -82,7 +82,7 @@
   },
   {
     "timestamp": -40,
-    "diff": {
+    "context": {
       "presence": "robert",
       "lightIntensity": 1,
       "lightbulbBrightness": "0"
@@ -90,7 +90,7 @@
   },
   {
     "timestamp": -30,
-    "diff": {
+    "context": {
       "presence": "none",
       "lightIntensity": 0,
       "tv": "off",
@@ -99,7 +99,7 @@
   },
   {
     "timestamp": -20,
-    "diff": {
+    "context": {
       "presence": "none",
       "lightIntensity": 0.5,
       "tv": "off",
@@ -108,7 +108,7 @@
   },
   {
     "timestamp": -10,
-    "diff": {
+    "context": {
       "presence": "none",
       "lightIntensity": 1,
       "tv": "off",

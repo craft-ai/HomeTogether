@@ -1,7 +1,7 @@
 [
   {
     "timestamp": -100,
-    "diff": {
+    "context": {
       "presence": "gisele",
       "lightIntensity": 1,
       "tv": "off",
@@ -10,7 +10,7 @@
   },
   {
     "timestamp": -100,
-    "diff": {
+    "context": {
       "presence": "gisele",
       "lightIntensity": 1,
       "tv": "on",
@@ -19,7 +19,7 @@
   },
   {
     "timestamp": -75,
-    "diff": {
+    "context": {
       "presence": "robert",
       "lightIntensity": 0.5,
       "tv": "off",
@@ -28,7 +28,7 @@
   },
   {
     "timestamp": -50,
-    "diff": {
+    "context": {
       "presence": "none",
       "lightIntensity": 0,
       "tv": "off",
@@ -37,7 +37,7 @@
   },
   {
     "timestamp": -25,
-    "diff": {
+    "context": {
       "presence": "gisele+robert",
       "lightIntensity": 0,
       "tv": "off",

@@ -140,8 +140,8 @@ export default function startAutomation(store) {
         }, timestamp())
       ])
       .then(([brightnessDecision, colorDecision]) => {
-        store.setLocationLightBrightness(roomName, brightnessDecision.decision.lightbulbBrightness);
-        store.setLocationLightColor(roomName, colorDecision.decision.lightbulbColor);
+        store.setLocationLightBrightness(roomName, brightnessDecision.output.lightbulbBrightness.predicted_value);
+        store.setLocationLightColor(roomName, colorDecision.output.lightbulbColor.predicted_value);
       })
       .catch(err => console.log(`Error while taking decision for ${roomName}`, err))
     ));
@@ -156,7 +156,7 @@ export default function startAutomation(store) {
       if (_.has(agents, location)) {
         client.addAgentContextOperations(agents[location].color, {
           timestamp: timestamp(),
-          diff: {
+          context: {
             lightbulbColor: color
           }
         })
@@ -167,7 +167,7 @@ export default function startAutomation(store) {
       if (_.has(agents, location)) {
         client.addAgentContextOperations(agents[location].brightness, {
           timestamp: timestamp(),
-          diff: {
+          context: {
             lightbulbBrightness: `${brightness}`
           }
         })
@@ -180,13 +180,13 @@ export default function startAutomation(store) {
         .then(() => Promise.all([
           client.addAgentContextOperations(agents[location].brightness, {
             timestamp: timestamp(),
-            diff: {
+            context: {
               tv: strFromTvState(tvState)
             }
           }),
           client.addAgentContextOperations(agents[location].color, {
             timestamp: timestamp(),
-            diff: {
+            context: {
               tv: strFromTvState(tvState)
             }
           })
@@ -200,13 +200,13 @@ export default function startAutomation(store) {
         .then(() =>  Promise.all([
           client.addAgentContextOperations(agents[location].brightness, {
             timestamp: timestamp(),
-            diff: {
+            context: {
               presence: strFromPresence(presence)
             }
           }),
           client.addAgentContextOperations(agents[location].color, {
             timestamp: timestamp(),
-            diff: {
+            context: {
               presence: strFromPresence(presence)
             }
           })
@@ -221,13 +221,13 @@ export default function startAutomation(store) {
         .map(location => [
           client.addAgentContextOperations(agents[location].brightness, {
             timestamp: timestamp(),
-            diff: {
+            context: {
               lightIntensity: intensity
             }
           }),
           client.addAgentContextOperations(agents[location].color, {
             timestamp: timestamp(),
-            diff: {
+            context: {
               lightIntensity: intensity
             }
           })

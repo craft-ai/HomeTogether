@@ -1,7 +1,7 @@
 [
   {
     "timestamp": -100,
-    "diff": {
+    "context": {
       "presence": "gisele",
       "lightIntensity": 1,
       "lightbulbColor": "#ffffff"
@@ -9,7 +9,7 @@
   },
   {
     "timestamp": -75,
-    "diff": {
+    "context": {
       "presence": "robert",
       "lightIntensity": 0.5,
       "lightbulbColor": "#ffffff"
@@ -17,7 +17,7 @@
   },
   {
     "timestamp": -50,
-    "diff": {
+    "context": {
       "presence": "none",
       "lightIntensity": 0,
       "lightbulbColor": "#ffffff"
@@ -25,7 +25,7 @@
   },
   {
     "timestamp": -25,
-    "diff": {
+    "context": {
       "presence": "gisele+robert",
       "lightIntensity": 0,
       "lightbulbColor": "#ffffff"
